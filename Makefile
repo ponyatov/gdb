@@ -22,8 +22,13 @@ BUILD = $(CWD)/build
 dirs:
 	mkdir -p $(GZ) $(SRC) $(PFX) $(BUILD)
 
+WGET = wget --no-check-certificate -c -P $(GZ)
 .PHONY: gz
 gz: $(GZ)/$(BINUTILS_GZ) $(GZ)/$(GDB_GZ)
+$(GZ)/$(BINUTILS_GZ):
+	$(WGET) http://ftp.gnu.org/gnu/binutils/$(BINUTILS_GZ)
+$(GZ)/$(GDB_GZ):
+	$(WGET) http://ftp.gnu.org/gnu/gdb/$(GDB_GZ)
 
 $(SRC)/%/README: $(GZ)/%.tar.gz
 	cd $(SRC) && tar zx < $< && touch $@
