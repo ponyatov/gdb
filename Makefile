@@ -1,4 +1,4 @@
-TARGET = i386-elf
+TARGET = i486-elf
 
 BINUTILS_VER	= 2.28
 GDB_VER			= 7.12.1
@@ -15,12 +15,13 @@ build: dirs gz binutils
 CWD = $(CURDIR)
 GZ = $(CWD)/gz
 SRC = $(CWD)/src
-PFX = $(CWD)/target
+PFX = $(CWD)/$(TARGET)
+ROOT = $(PFX).root
 BUILD = $(CWD)/build
 
 .PHONY: dirs
 dirs:
-	mkdir -p $(GZ) $(SRC) $(PFX) $(BUILD)
+	mkdir -p $(GZ) $(SRC) $(PFX) $(ROOT) $(BUILD)
 
 WGET = wget --no-check-certificate -c -P $(GZ)
 .PHONY: gz
@@ -34,10 +35,12 @@ $(SRC)/%/README: $(GZ)/%.tar.gz
 	cd $(SRC) && tar zx < $< && touch $@
 
 PFX = $(CURDIR)/$(TARGET)
-CFG = configure --disable-nls --prefix=$(PFX) --target=$(TARGET)
+CFG = configure --disable-nls \
+	  --prefix=$(PFX) --target=$(TARGET) --with-sysroot=$(ROOT)
 
 .PHONY: binutils
 binutils: $(SRC)/$(BINUTILS)/README
 	rm -rf $(BUILD)/$(BINUTILS) ; mkdir $(BUILD)/$(BINUTILS)
-	cd $(BUILD)/$(BINUTILS) ; $(SRC)/$(BINUTILS)/$(CFG)
+	cd $(BUILD)/$(BINUTILS) && $(SRC)/$(BINUTILS)/$(CFG)
+	cd $(BUILD)/$(BINUTILS) && make && make install-strip
 
