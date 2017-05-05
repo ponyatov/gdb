@@ -34,10 +34,10 @@ $(SRC)/%/README: $(GZ)/%.tar.gz
 	cd $(SRC) && tar zx < $< && touch $@
 
 PFX = $(CURDIR)/$(TARGET)
-CFG = echo configure --disable-nls --prefix=$(PFX)
+CFG = configure --disable-nls --prefix=$(PFX) --target=$(TARGET)
 
 .PHONY: binutils
 binutils: $(SRC)/$(BINUTILS)/README
-#	rm -rf build/$(BINUTILS) ; mkdir build/$(BINUTILS)
-#	cd build/$(BINUTILS) ; ../src/$(BINUTILS)/$(CFG)
+	rm -rf $(BUILD)/$(BINUTILS) ; mkdir $(BUILD)/$(BINUTILS)
+	cd $(BUILD)/$(BINUTILS) ; $(SRC)/$(BINUTILS)/$(CFG)
 
